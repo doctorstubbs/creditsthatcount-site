@@ -1,7 +1,7 @@
 // Credits That Count service worker: network first, cache fallback.
 // Keeps the app installable and resilient without ever serving stale checks.
-const CACHE = 'ctc-v2';
-const SHELL = ['/', '/how-it-works/', '/counselors/', '/terms/', '/about/', '/contact/', '/favicon.svg', '/manifest.webmanifest'];
+const CACHE = 'ctc-v3';
+const SHELL = ['/', '/students/', '/parents/', '/how-it-works/', '/counselors/', '/terms/', '/about/', '/contact/', '/favicon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
