@@ -295,13 +295,6 @@ html { scroll-behavior: smooth; }
     <div id="admResult"></div>
   </div>
 
-  <div class="card" style="background:#1d3fae;color:#fff;">
-    <h2 style="margin-top:0;font-size:20px;color:#fff;">Get the full plan</h2>
-    <p>Everything on this page, finished for one student: a semester by semester map built only from verified courses, admission standing, the apply ready packet with published deadlines, the savings total at published tuition, and a signed audit reviewed by Dr. Kristofer Stubbs, a working transcript evaluator.</p>
-    <p><a href="mailto:plans@creditsthatcount.com?subject=Credits%20That%20Count%20full%20plan%20request" style="display:inline-block;background:#f5b921;color:#14213d;font-weight:bold;padding:10px 18px;border-radius:8px;text-decoration:none;">Request the full plan</a></p>
-    <p class="fine" style="color:#dbe2ff;">Tell us the college your student attends now and the university they want to finish at, and we will reply with what it takes to get theirs.</p>
-  </div>
-
 <!--CTC-SECTIONS-END-->  <div class="card">
     <h2 style="margin-top:0;font-size:20px;">About this check</h2>
     <p>A Louisiana college credit check: for community college transfers, dual enrollment and early college students, and anyone moving credits between Louisiana colleges. Built on the Board of Regents articulation rules and the colleges' own current catalogs. What this check assumes, and where its data comes from, is linked at the bottom of this page.</p>
@@ -988,38 +981,34 @@ function render(r) {
   const stu = window._lastStudent || {};
   const rep = window._lastReport || {};
   const targetName = (stu.target && stu.target.name) || 'the target college';
-  let heading, blurb, subject;
+  // The checker is a free tool (Nov 19, 2026): a completed check
+  // no longer offers a full report by email, and the plan section
+  // is gone from the page. The only capture left is the coverage
+  // request for colleges still being built, and it now promises
+  // a notice when the course data is verified, not a report.
   if (uncovered.length) {
-    heading = 'Not covered yet: ' + uncovered.join(', ');
-    blurb = 'These colleges are being built. Enter your email and your full report will be sent to you when their course data is verified. Every request moves a college up the list.';
-    subject = 'Credits That Count coverage request: ' + uncovered.join(', ');
+    const heading = 'Not covered yet: ' + uncovered.join(', ');
+    const blurb = 'These colleges are being built. Enter your email and we will let you know when their course data is verified. Every request moves a college up the list.';
+    const subject = 'Credits That Count coverage request: ' + uncovered.join(', ');
+    cr.innerHTML = '<div class="keycard" style="border:2px solid #1d3fae;background:#f2f4fd;border-radius:10px;padding:14px;margin-top:12px;">' +
+      '<p style="margin-top:0;"><strong>' + heading + '</strong></p>' +
+      '<p>' + blurb + '</p>' +
+      '<label for="crEmail">Your email</label>' +
+      '<input type="text" id="crEmail" placeholder="you@example.com">' +
+      '<p><button type="button" id="crBtn">Send the request</button></p>' +
+      '<p class="fine"><span>By sending this request, you confirm you may share this contact information with us so we can write back about your request.</span> <span>We never sell contact information.</span></p></div>';
+    document.getElementById('crBtn').addEventListener('click', () => {
+      const email = (document.getElementById('crEmail').value || '').trim();
+      const lines = ['Coverage request from the credit checker', '', 'Email to notify: ' + email, 'Target college: ' + targetName];
+      lines.push('Colleges to build: ' + uncovered.join(', '));
+      (stu.sources || []).forEach(src => { lines.push('Courses from ' + src.institution + ': ' + (src.courses || []).map(c => c.code).join(', ')); });
+      (rep.courseResults || []).forEach(c => { lines.push(c.code + ': ' + c.shownAs); });
+      (rep.apResults || []).forEach(a => { lines.push('AP ' + a.exam + ': ' + a.shownAs); });
+      window.location.href = 'mailto:plans@creditsthatcount.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+    });
   } else {
-    heading = 'Get the full report';
-    blurb = 'The full report for this check lists every course, what it counts as at ' + targetName + ', and the conditions on it. Enter your email and it will be sent to you.';
-    subject = 'Credits That Count full report request: ' + targetName;
+    cr.innerHTML = '';
   }
-  cr.innerHTML = '<div class="keycard" style="border:2px solid #1d3fae;background:#f2f4fd;border-radius:10px;padding:14px;margin-top:12px;">' +
-    '<p style="margin-top:0;"><strong>' + heading + '</strong></p>' +
-    '<p>' + blurb + '</p>' +
-    '<label for="crEmail">Email for your report</label>' +
-    '<input type="text" id="crEmail" placeholder="you@example.com">' +
-    '<p><button type="button" id="crBtn">Request the full report</button></p>' +
-    '<p class="fine"><span>By sending this request, you confirm you may share this contact information with us so we can write back about your plan.</span> <span>We never sell contact information.</span></p></div>';
-  document.getElementById('crBtn').addEventListener('click', () => {
-    const email = (document.getElementById('crEmail').value || '').trim();
-    const lines = ['Report request from the credit checker', '', 'Send the report to: ' + email, 'Target college: ' + targetName];
-    if (uncovered.length) lines.push('Colleges to build: ' + uncovered.join(', '));
-    (stu.sources || []).forEach(src => { lines.push('Courses from ' + src.institution + ': ' + (src.courses || []).map(c => c.code).join(', ')); });
-    (rep.courseResults || []).forEach(c => { lines.push(c.code + ': ' + c.shownAs); });
-    (rep.apResults || []).forEach(a => { lines.push('AP ' + a.exam + ': ' + a.shownAs); });
-    window.location.href = 'mailto:plans@creditsthatcount.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
-  });
-  document.getElementById('reportCta').innerHTML = '<p style="margin-top:14px;"><button type="button" id="ctaBtn">Request the full report</button></p>';
-  document.getElementById('ctaBtn').addEventListener('click', () => {
-    cr.scrollIntoView({ behavior: 'smooth' });
-    const em = document.getElementById('crEmail');
-    if (em) em.focus({ preventScroll: true });
-  });
   box.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -1460,7 +1449,7 @@ var CTC_ES_DICT = {
  "Board of Regents Articulation Matrix, 2025-26": "Matriz de Articulación del Board of Regents, 2025-26",
  "Build my plan": "Construir mi plan",
  "Built from the Louisiana Universal Transfer Pathways: 60 credit hours that transfer and count toward the degree at any Louisiana public university that offers it. Pick a career goal and see the exact courses at your college, starting with next semester. Sixteen pathways are verified in full today; the rest are being verified before they are listed. A gap is named, never filled with a guess.": "Basado en las Rutas Universales de Transferencia de Luisiana: 60 horas de crédito que se transfieren y cuentan para el título en cualquier universidad pública de Luisiana que lo ofrezca. Elija una meta profesional y vea los cursos exactos en su universidad, empezando por el próximo semestre. Dieciséis rutas están verificadas por completo hoy; el resto se está verificando antes de publicarse. Un vacío se nombra, nunca se rellena con una suposición.",
- "By sending this request, you confirm you may share this contact information with us so we can write back about your plan.": "Al enviar esta solicitud, usted confirma que puede compartir esta información de contacto con nosotros para que podamos responderle sobre su plan.",
+ "By sending this request, you confirm you may share this contact information with us so we can write back about your request.": "Al enviar esta solicitud, usted confirma que puede compartir esta información de contacto con nosotros para que podamos responderle sobre su solicitud.",
  "Can you take dual enrollment yet?": "¿Ya puede tomar inscripción dual?",
  "Career goal": "Meta profesional",
  "Check admission standing": "Verificar mi situación de admisión",
@@ -1480,16 +1469,12 @@ var CTC_ES_DICT = {
  "Course by course results below.": "Resultados curso por curso a continuación.",
  "Degree credit": "Crédito para el título",
  "Elective": "Electiva",
- "Email for your report": "Correo electrónico para su informe",
  "English Composition": "Composición en inglés",
  "English, humanities, or social sciences": "Inglés, humanidades o ciencias sociales",
  "Every course must be verified with the university individually. Nothing on this report is promised.": "Cada curso debe verificarse con la universidad de forma individual. Nada en este informe está prometido.",
- "Everything on this page, finished for one student: a semester by semester map built only from verified courses, admission standing, the apply ready packet with published deadlines, the savings total at published tuition, and a signed audit reviewed by Dr. Kristofer Stubbs, a working transcript evaluator.": "Todo lo de esta página, terminado para un estudiante: un mapa semestre por semestre construido solo con cursos verificados, la situación de admisión, el paquete listo para solicitar con las fechas límite publicadas, el total de ahorro según la matrícula publicada y una auditoría firmada y revisada por el Dr. Kristofer Stubbs, un evaluador de expedientes en activo.",
  "Fine Arts": "Bellas artes",
  "General education": "Educación general",
  "General education: complete. No additional general education courses required under the transfer guarantee.": "Educación general: completa. No se requieren cursos adicionales de educación general bajo la garantía de transferencia.",
- "Get the full plan": "Obtenga el plan completo",
- "Get the full report": "Obtenga el informe completo",
  "Grade level": "Nivel de grado",
  "High school GPA (cumulative, unweighted)": "GPA de la escuela secundaria (acumulado, sin ponderar)",
  "Humanities": "Humanidades",
@@ -1520,12 +1505,11 @@ var CTC_ES_DICT = {
  "Private university: the Louisiana state guarantee does not apply here.": "Universidad privada: la garantía estatal de Luisiana no aplica aquí.",
  "Questions to ask your advisor": "Preguntas para su asesor",
  "Report an error": "Reportar un error",
- "Request the full plan": "Solicitar el plan completo",
- "Request the full report": "Solicitar el informe completo",
  "Result": "Resultado",
  "Rules in this version: course outcomes are direct equivalent, level elective, or general elective, from current college catalogs and the Louisiana articulation rules; private universities are not bound by the state guarantee; courses numbered below 100 earn no degree credit; limited access program admission is always a separate decision; electives never replace a missing major prerequisite. The Louisiana Transfer Degree block guarantee (general education complete, all 60 hours, junior standing) is not applied by this quick check: a degree is read from a transcript, not a dropdown, and that is what the full audit does. Credits from several colleges are evaluated together and reported college by college. This check assumes every course is passed with a grade of C or better, which is what transfer credit requires in the first place. If a course ends below a C, the receiving university decides that course on its own. Courses from colleges not yet in the course data are flagged as not covered yet rather than guessed. AP exams are checked under the Louisiana statewide AP policy: a public college awards credit for a score of 3 or higher once the official score report is sent; a score below 3, or a score report never sent, earns no credit; private universities set their own AP policy. This tool gives guidance from published rules, not an official ruling. The receiving university makes the final call on every credit.": "Reglas de esta versión: los resultados de los cursos son equivalente directo, electiva por nivel o electiva general, según los catálogos actuales y las reglas de articulación de Luisiana; las universidades privadas no están sujetas a la garantía estatal; los cursos con número menor de 100 no otorgan crédito para el título; la admisión a programas de acceso limitado siempre es una decisión separada; las electivas nunca reemplazan un prerrequisito faltante de la especialidad. La garantía en bloque del Título de Transferencia de Luisiana (educación general completa, las 60 horas y nivel junior) no se aplica en esta verificación rápida: un título se lee de un expediente académico, no de un menú, y eso es lo que hace la auditoría completa. Los créditos de varias universidades se evalúan juntos y se informan universidad por universidad. Esta verificación supone que cada curso se aprueba con una calificación de C o mejor, que es lo que la transferencia de créditos exige en primer lugar. Si un curso termina por debajo de C, la universidad receptora decide sobre ese curso por su cuenta. Los cursos de universidades que aún no están en los datos se marcan como no cubiertos en vez de adivinarlos. Los exámenes AP se verifican según la política estatal AP de Luisiana: una universidad pública otorga crédito por una puntuación de 3 o más una vez que se envía el informe oficial de puntuaciones; una puntuación menor de 3, o un informe nunca enviado, no otorga crédito; las universidades privadas establecen su propia política AP. Esta herramienta ofrece orientación a partir de reglas publicadas, no una decisión oficial. La universidad receptora tiene la última palabra sobre cada crédito.",
  "Score": "Puntuación",
  "See something wrong in these results?": "¿Ve algo incorrecto en estos resultados?",
+ "Send the request": "Enviar la solicitud",
  "Senior (12th grade)": "Senior (12.º grado)",
  "Show my courses": "Mostrar mis cursos",
  "Social/Behavioral Sciences": "Ciencias sociales y del comportamiento",
@@ -1534,7 +1518,6 @@ var CTC_ES_DICT = {
  "Subject you want to take": "Materia que quiere tomar",
  "Target college (where you want the courses to count)": "Universidad de destino (donde quiere que cuenten los cursos)",
  "Technical courses": "Cursos técnicos",
- "Tell us the college your student attends now and the university they want to finish at, and we will reply with what it takes to get theirs.": "Díganos la universidad a la que asiste su estudiante ahora y la universidad donde quiere terminar, y le responderemos con lo que se necesita para obtener el suyo.",
  "The Louisiana Transfer Degree plan: 60 hours (39 of general education plus 21 more) that transfer as a block to any Louisiana public university, with general education met in full and junior standing, when every course is passed with a C or better. Built only from courses verified at both colleges.": "El plan del Título de Transferencia de Luisiana: 60 horas (39 de educación general más 21 más) que se transfieren en bloque a cualquier universidad pública de Luisiana, con la educación general cumplida por completo y nivel junior, cuando cada curso se aprueba con C o mejor. Construido solo con cursos verificados en ambas universidades.",
  "The university you want to finish at": "La universidad donde quiere terminar",
  "These results use course data from the AY 2025-26 statewide common course catalog.": "Estos resultados usan los datos de cursos del catálogo estatal de cursos comunes del año académico 2025-26.",
@@ -1546,6 +1529,7 @@ var CTC_ES_DICT = {
  "Will this credit count?": "¿Contará este crédito?",
  "Will you be admitted?": "¿Será admitido?",
  "Your college": "Su universidad",
+ "Your email": "Su correo electrónico",
  "Your course": "Su curso",
  "e.g. 18": "ej. 18",
  "e.g. 19": "ej. 19",
@@ -1803,7 +1787,6 @@ var CTC_ES_DICT = {
  "Two classes from the published math list": "Dos clases de la lista publicada de matemáticas",
  "Web Developer": "Desarrollador web",
  "Your apply ready packet": "Su paquete listo para solicitar",
- "These colleges are being built. Enter your email and your full report will be sent to you when their course data is verified. Every request moves a college up the list.": "Estas universidades se están construyendo. Ingrese su correo electrónico y se le enviará su informe completo cuando los datos de sus cursos estén verificados. Cada solicitud hace subir una universidad en la lista.",
  "College not specified": "Universidad no especificada",
  "2026-2027 fee schedule, verified November 11, 2026": "tarifas 2026-2027, verificadas el 11 de noviembre de 2026",
  "Fall 2026 fee schedule, verified November 11, 2026": "tarifas del otoño de 2026, verificadas el 11 de noviembre de 2026",
@@ -2059,6 +2042,9 @@ var CTC_ES_DICT = {
       return 'ACT compuesto ' + m[1] + ' (el suyo: ' + m[2] + ')';
     }
     if ((m = s.match(/^Not covered yet: (.+)$/))) return 'Aún no cubierto: ' + m[1];
+    if ((m = s.match(/^These colleges are being built\. Enter your email and we will let you know when their course data is verified\. Every request moves a college up the list\.$/))) {
+      return 'Estas universidades se están construyendo. Ingrese su correo electrónico y le avisaremos cuando los datos de sus cursos estén verificados. Cada solicitud hace subir una universidad en la lista.';
+    }
     if ((m = s.match(/^All (\d+) credit hours of the transfer degree move, with junior standing\.$/))) {
       return 'Las ' + m[1] + ' horas de crédito del título de transferencia se mueven todas, con nivel junior.';
     }
@@ -2067,9 +2053,6 @@ var CTC_ES_DICT = {
     }
     if ((m = s.match(/^Flagged: (.+) falls outside the transfer guarantee\. The receiving university decides that course on its own\.$/))) {
       return 'Marcado: ' + m[1] + ' queda fuera de la garantía de transferencia. La universidad receptora decide sobre ese curso por su cuenta.';
-    }
-    if ((m = s.match(/^The full report for this check lists every course, what it counts as at (.+), and the conditions on it\. Enter your email and it will be sent to you\.$/))) {
-      return 'El informe completo de esta verificación enumera cada curso, como qué cuenta en ' + m[1] + ', y las condiciones que tiene. Ingrese su correo electrónico y se le enviará.';
     }
     if ((m = s.match(/^Credit awarded: counts toward (.+)\.$/))) {
       return 'Crédito otorgado: cuenta para ' + T(m[1]) + '.';
