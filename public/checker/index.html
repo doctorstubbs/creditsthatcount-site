@@ -74,7 +74,10 @@ html { scroll-behavior: smooth; }
 .pathbox-desc { display: block; font-size: 13px; color: #44506a; }
 /*CTC-STYLE-END*/
 </style>
-</head>
+<!--CTC-SEO-START-->
+<link rel="canonical" href="https://creditsthatcount.com/checker/" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Credits That Count: Louisiana Credit Transfer Checker","url":"https://creditsthatcount.com/checker/","applicationCategory":"EducationalApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Credits That Count","url":"https://creditsthatcount.com/"}}</script>
+<!--CTC-SEO-END--></head>
 <body>
 <header class="hero">
   <div class="hero-inner">
@@ -1195,11 +1198,11 @@ function renderAuditHtml(audit) {
   parts.push('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">');
   parts.push('<title>Credit Transfer Audit</title>');
   parts.push('<style>body{font-family:Georgia,serif;max-width:760px;margin:40px auto;padding:0 20px;color:#111}');
-  parts.push('h1{font-size:26px;margin:0 0 4px}.band{background:#1d3fae;color:#fff;padding:18px 20px;border-radius:8px}.band .fromto{font-size:16px;margin:0}.band .tgt{color:#ffd21f}h2{font-size:19px;margin-top:28px}h2 .tgt{color:#1d3fae}');
+  parts.push('.band h2{font-size:26px;margin:0 0 4px}.band{background:#1d3fae;color:#fff;padding:18px 20px;border-radius:8px}.band .fromto{font-size:16px;margin:0}.band .tgt{color:#ffd21f}h2{font-size:19px;margin-top:28px}h2 .tgt{color:#1d3fae}');
   parts.push('table{border-collapse:collapse;width:100%;margin-top:8px}th,td{border:1px solid #999;padding:6px 8px;text-align:left;font-size:15px}');
   parts.push('.total{font-size:18px;font-weight:bold;margin-top:24px}.limits{margin-top:32px;font-size:14px;color:#333}</style></head><body>');
   const fromList = audit.groups.map((g) => g.institution).join(' and ');
-  parts.push('<div class="band"><h1>Credit Transfer Audit</h1>');
+  parts.push('<div class="band"><h2>Credit Transfer Audit</h2>');
   parts.push('<p class="fromto">Courses from <strong>' + esc(fromList) + '</strong> counting at <strong class="tgt">' + esc(audit.target) + '</strong></p></div>');
 
   for (const g of audit.groups) {
