@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="For Counselors | Credits That Count"
+  description="Credits That Count for independent counselors, tutoring centers, homeschool co-ops, and advising organizations. Join the counselor list."
+>
+  <div class="container">
+    <section class="block" style="margin-top:26px;">
+      <h2>For counselors and advising organizations</h2>
+      <p>
+        Built for independent counselors, tutoring centers, homeschool
+        co-ops, and advising organizations who guide Louisiana students
+        through dual enrollment and transfer decisions.
+      </p>
+      <div class="cards two">
+        <div class="card">
+          <h3>What seats include</h3>
+          <ul>
+            <li>A roster for all of your students</li>
+            <li>Per-student Full Plans and Signed Audits</li>
+            <li>Semester re-checks as catalogs change</li>
+            <li>Every plan dated, edition stamped, and sourced</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pricing</h3>
+          <p class="price">Per seat <small>/ month</small></p>
+          <p class="muted">
+            Seat pricing is shared with the counselor list first, before
+            public launch.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="card">
+        <h2>Join the counselor list</h2>
+        <p class="muted">
+          Tell us where to reach you and roughly how many students you serve.
+          We will write back when seats open.
+        </p>
+        <form class="intake" id="counselor-form">
+          <label for="cf-name">Your name</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required />
+
+          <label for="cf-org">Organization</label>
+          <input id="cf-org" name="organization" type="text" autocomplete="organization" required />
+
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required />
+
+          <label for="cf-students">Approximate number of students</label>
+          <input id="cf-students" name="students" type="text" inputmode="numeric" />
+
+          <button class="btn" type="submit">Join the Counselor List</button>
+          <p class="fine" style="margin-top:12px;">
+            Submitting opens your email app with the details filled in, ready
+            to send to our team.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <p class="tagline-foot">Know before you go.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('counselor-form');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const lines = [
+        'Name: ' + data.get('name'),
+        'Organization: ' + data.get('organization'),
+        'Email: ' + data.get('email'),
+        'Approximate students: ' + (data.get('students') || ''),
+      ];
+      const subject = encodeURIComponent('Join the counselor list: Credits That Count');
+      const body = encodeURIComponent(lines.join('\n'));
+      window.location.href =
+        'mailto:stubbsmediaco@gmail.com?subject=' + subject + '&body=' + body;
+    });
+  </script>
+</Base>
