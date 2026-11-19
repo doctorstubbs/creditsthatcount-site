@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1d3fae" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/">Credits That <span>Count</span></a>
+        <nav class="main-nav" aria-label="Main">
+          <a href="/checker/">Check My Credits</a>
+          <a href="/pricing/">Pricing</a>
+          <a href="/how-it-works/">How It Works</a>
+          <a href="/counselors/">For Counselors</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <nav aria-label="Footer">
+          <a href="/checker/">Check My Credits</a>
+          <a href="/pricing/">Pricing</a>
+          <a href="/how-it-works/">How It Works</a>
+          <a href="/counselors/">For Counselors</a>
+        </nav>
+        <p>
+          Our Credit Transfer Pros are former and current higher education
+          administrators with experience in college student affairs,
+          admissions, and student success.
+        </p>
+        <p>
+          Credits That Count provides guidance built from published sources.
+          Only the receiving college makes the final decision on how a credit
+          applies.
+        </p>
+        <p>&copy; {year} Credits That Count. All rights reserved.</p>
+      </div>
+    </footer>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>
