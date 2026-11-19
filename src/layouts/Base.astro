@@ -17,6 +17,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          name: 'Credits That Count',
+          url: 'https://creditsthatcount.com/',
+          email: 'plans@creditsthatcount.com',
+          logo: 'https://creditsthatcount.com/og-image.png',
+        },
+        {
+          '@type': 'WebSite',
+          name: 'Credits That Count',
+          url: 'https://creditsthatcount.com/',
+        },
+      ],
+    })} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
