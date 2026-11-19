@@ -8,6 +8,7 @@ interface Props {
 
 const { title, description } = Astro.props;
 const year = new Date().getFullYear();
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -16,6 +17,14 @@ const year = new Date().getFullYear();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content="https://creditsthatcount.com/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="theme-color" content="#1d3fae" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -27,7 +36,6 @@ const year = new Date().getFullYear();
         <a class="brand" href="/">Credits That <span>Count</span></a>
         <nav class="main-nav" aria-label="Main">
           <a href="/checker/">Check My Credits</a>
-          <a href="/pricing/">Pricing</a>
           <a href="/how-it-works/">How It Works</a>
           <a href="/counselors/">For Counselors</a>
           <a href="/privacy/">Privacy</a>
@@ -43,11 +51,17 @@ const year = new Date().getFullYear();
       <div class="container">
         <nav aria-label="Footer">
           <a href="/checker/">Check My Credits</a>
-          <a href="/pricing/">Pricing</a>
           <a href="/how-it-works/">How It Works</a>
           <a href="/counselors/">For Counselors</a>
           <a href="/privacy/">Privacy</a>
+          <a href="/terms/">Terms</a>
+          <a href="/about/">About</a>
+          <a href="/contact/">Contact</a>
         </nav>
+        <p>
+          Questions? Write to us at
+          <a href="mailto:plans@creditsthatcount.com">plans@creditsthatcount.com</a>.
+        </p>
         <p>
           Our Credit Transfer Pros are former and current higher education
           administrators with experience in college student affairs,
